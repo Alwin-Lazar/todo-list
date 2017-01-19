@@ -54,14 +54,13 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         
     }
     
-    func toDoCellButtonPressed(todo: ToDo?) {
+    func toDoCellButtonPressed(selectedToDo: ToDo?) {
         
-        if let t = toDo {
+        if let t = selectedToDo {
             //tell context to delete todo and remove cell.
             context.delete(t)
             ad.saveContext()
             
-            self.tableView.reloadData()
             
         }
     
@@ -174,6 +173,18 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
         switch type {
+            
+        case.update:
+            if let indexPath = indexPath {
+                
+                let cell = tableView.cellForRow(at: indexPath)
+                //update the cell data
+                
+                configureCell(cell: cell as! ItemCell, indexPath: indexPath as NSIndexPath)
+            }
+            
+            break
+            
         case.insert:
             if let indexPath = newIndexPath {
                 tableView.insertRows(at: [indexPath], with: .fade)
@@ -190,24 +201,20 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
             
             break
             
-        case.update:
+            
+        case.move:
             if let indexPath = indexPath {
-                
                 let cell = tableView.cellForRow(at: indexPath)
                 //update the cell data
                 
                 configureCell(cell: cell as! ItemCell, indexPath: indexPath as NSIndexPath)
             }
             
-            break
-            
-        case.move:
-            if let indexPath = indexPath {
-                tableView.deleteRows(at: [indexPath], with: .fade)
-            }
-            
-            if let indexPath = newIndexPath {
-                tableView.insertRows(at: [indexPath], with: .fade)
+            if let newIndexPath = newIndexPath {
+                let cell = tableView.cellForRow(at: newIndexPath)
+                //update the cell data
+                
+                configureCell(cell: cell as! ItemCell, indexPath: newIndexPath as NSIndexPath)
             }
             
             break
@@ -229,28 +236,10 @@ class MainVC: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFe
         
         taskTextField.text = ""
             
-        self.tableView.reloadData()
             
         }
         
     }
-    
-    // done button
-    func donePressed() {
-        
-        
-        
-        if toDo != nil {
-            
-        context.delete(toDo)
-        ad.saveContext()
-            
-        }
-        
-        
-    }
-
-    
     
     func generateData() {
         

@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ToDoCellDelegate: class {
-    func toDoCellButtonPressed(todo: ToDo?)
+    func toDoCellButtonPressed(selectedToDo: ToDo?)
 }
 
 class ItemCell: UITableViewCell {
@@ -41,7 +41,7 @@ class ItemCell: UITableViewCell {
     func buttonPress() {
         
         
-        self.delegate?.toDoCellButtonPressed(todo: self.toDo)
+        self.delegate?.toDoCellButtonPressed(selectedToDo: self.toDo)
     }
     
 
